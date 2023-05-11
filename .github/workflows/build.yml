@@ -1,0 +1,19 @@
+# This is a basic workflow to automatically build a Svelte app
+name: Build Svelte Project
+permissions: write-all
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install and Build
+        run: |
+          npm install
+          npm run build
