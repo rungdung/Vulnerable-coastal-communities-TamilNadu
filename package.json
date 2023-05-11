@@ -1,6 +1,6 @@
 {
-  "name": "template-mapping",
-  "private": true,
+  "name": "Vulnerable-Communities-TN-Coastal-data-story",
+  "private": false,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -18,18 +18,9 @@
     "@mapbox/mapbox-gl-draw": "^1.4.1",
     "@maplibre/maplibre-gl-compare": "github:maplibre/maplibre-gl-compare",
     "@turf/turf": "^6.5.0",
-    "@watergis/maplibre-gl-legend": "^1.2.8",
-    "deck.gl": "^8.9.13",
-    "drawflow": "^0.0.59",
     "geojson-precision": "^1.0.0",
-    "leaflet": "^1.9.3",
-    "leaflet-search": "^3.0.9",
-    "leaflet.markercluster": "^1.5.3",
-    "litegraph": "^0.0.0",
-    "litegraph.js": "^0.7.12",
+    "js-yaml": "^4.1.0",
     "maplibre-gl-temporal-control": "^1.0.3",
-    "svelte-collapsible": "^0.2.1",
-    "svelte-maplibre": "^0.2.1",
-    "svelvet": "^6.0.12"
+    "read-yaml": "^1.1.0"
   }
 }
