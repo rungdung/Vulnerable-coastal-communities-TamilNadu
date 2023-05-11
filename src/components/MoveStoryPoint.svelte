@@ -4,7 +4,6 @@
   import "maplibre-gl/dist/maplibre-gl.css";
 
   // Geospatial librarie
-
   import * as turf from "@turf/turf";
 
   var title;
@@ -33,6 +32,7 @@
 
   let currentIndex = 0;
 
+  // Pans and zooms to next story point
   function moveTo() {
     currentIndex = (currentIndex + 1) % titles.length;
     map.flyTo({
@@ -50,10 +50,10 @@
     map.setLayoutProperty(layer[currentIndex], "visibility", "visible");
   }
 
+  // Scatter effect to illustrate scale and disorient user
   function makeGrid() {
     // turf
     // to animate geojson features to split up
-    console.log("test");
     let layer = map.getSource("atRiskVillages100mts");
     const features = map.querySourceFeatures("atRiskVillages100mts", {
       sourceLayer: layer.sourceLayer,
@@ -70,6 +70,17 @@
       }),
     };
 
+    // function to use turf.transformTranslate to move to targetPosition
+    function moveToPos(currentGeometry, startPosition, endPosition) {
+      const distance = turf.distance(startPosition, endPosition);
+      const direction = turf.bearing(startPosition, endPosition);
+
+      turf.transformTranslate(currentGeometry, distance, direction, {
+        mutate: true,
+      });
+    }
+
+    // Iterates through each feature and assigns a random position
     turf.geomEach(
       geojsonLayer,
       function (
@@ -79,13 +90,22 @@
         featureBBox,
         featureId
       ) {
+        let startPosition = turf.centerOfMass(currentGeometry);
+
+        // Get the map bounds
+        const bounds = map.getBounds();
+        // Extract the bounds coordinates
+        const { lng: west, lat: south } = bounds.getSouthWest();
+        const { lng: east, lat: north } = bounds.getNorthEast();
+        // Generate a random position within the bounds
+        const targetPosition = turf.randomPosition([west, south, east, north]);
+        moveToPos(currentGeometry, startPosition, targetPosition);
         //console.log(currentGeometry);
-        console.log(featureIndex)
-        //=featureProperties
-        //=featureBBox
-        //=featureId
       }
     );
+
+    // Updates the source with the new data
+    map.getSource("atRiskVillages100mts").setData(geojsonLayer);
   }
 </script>
 
