@@ -28,12 +28,14 @@
       bearing: 30, // bearing in degrees
       zoom: 7,
       maxZoom: 10,
-      minZoom: 7,
-    });
+      minZoom: 3,
+    }).addControl(new maplibre.AttributionControl({
+    customAttribution: "ML Infomap. (2013) Tamil Nadu, India: Village Socio-Demographic and Economic Census Data, 2001 | CRZ data from National Centre for Sustainable Coastal Management"
+    }));;
 
-    // Draw control
-    var Draw = new MapboxDraw();
-    map.addControl(Draw, "bottom-left");
+    // // Draw control
+    // var Draw = new MapboxDraw();
+    // map.addControl(Draw, "bottom-left");
 
     // Add layers once map loads
     map.on("load", () => {
@@ -44,7 +46,7 @@
         map.getCanvas().style.cursor = "pointer";
         popup
           .setLngLat(e.lngLat)
-          .setHTML(e.features[0].properties.Village)
+          .setHTML(e.features[0].properties.name + "<br> Total Population: " + e.features[0].properties.tot_p)
           .addTo(map);
       });
       map.on("mouseleave", "atRiskVillages100mts", function () {
@@ -78,7 +80,7 @@
     <ScaleOut
       id="loading-icon"
       size="100"
-      color="#FF3E00"
+      color="#0f4456"
       unit="px"
       duration="1s"
     />
