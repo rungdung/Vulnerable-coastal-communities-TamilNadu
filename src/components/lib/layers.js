@@ -3,6 +3,8 @@ import atRiskVillages100mts from "../../assets/100mtsfromHazardLineVillages.geoj
 import CRZboundary from "../../assets/CRZboundary.geojson";
 import hazardLine from "../../assets/hazardLine.geojson";
 import NDZline from "../../assets/200mtsNDZline.geojson";
+import erosionLine from "../../assets/erosionLine.geojson";
+import tamilNaduBoundary from "../../assets/tamilNaduBoundary.geojson";
 
 // To rewind to RightHand GeoJSON spec
 import rewind from "@mapbox/geojson-rewind";
@@ -27,10 +29,10 @@ export function loadLayers(map){
         data: CRZboundary,
       });
     
-      // map.addSource("hazardLine", {
-      //   type: "geojson",
-      //   data: hazardLine,
-      // });
+      map.addSource("hazardLine", {
+        type: "geojson",
+        data: hazardLine,
+      });
     
       map.addSource("NDZline", {
         type: "geojson",
@@ -57,6 +59,16 @@ export function loadLayers(map){
           [80.3543062603006, 13.580695017916167],
           [77.08902767630629, 13.580695017916167],
         ],
+      });
+
+      map.addSource("tamilNaduBoundary", {
+        type: "geojson",
+        data: tamilNaduBoundary,
+      })
+
+      map.addSource("erosionLine", {
+        type: "geojson",
+        data: erosionLine
       });
     
       map.addLayer({
@@ -118,6 +130,7 @@ export function loadLayers(map){
           "line-opacity": 0.5,
         },
       });
+      map.setLayoutProperty("atRiskVillage100mtsLine", "visibility", "none");
     
       map.addLayer({
         id: "villageText",
@@ -142,16 +155,36 @@ export function loadLayers(map){
       });
       map.setLayoutProperty("CRZboundary", "visibility", "none");
     
-      // map.addLayer({
-      //   id: "hazardLine",
-      //   type: "line",
-      //   source: "hazardLine",
-      //   paint: {
-      //     "line-color": "red",
-      //     "line-width": 2,
-      //   },
-      // });
-      // map.setLayoutProperty("hazardLine", "visibility", "none");
+      map.addLayer({
+        id: "erosionLine",
+        type: "line",
+        source: "erosionLine",
+        paint: {
+          "line-color": "yellow",
+          "line-width": 5,
+        },
+      });
+      map.setLayoutProperty("erosionLine", "visibility", "none");
+
+      map.addLayer({
+        id: "tamilNaduBoundary",
+        type: "fill",
+        source: "tamilNaduBoundary",
+        paint: {
+          "fill-color": "#8a6837",
+          "fill-opacity": 0.4,
+        }})
+
+      map.addLayer({
+        id: "hazardLine",
+        type: "line",
+        source: "hazardLine",
+        paint: {
+          "line-color": "red",
+          "line-width": 2,
+        },
+      });
+      map.setLayoutProperty("hazardLine", "visibility", "none");
     
       map.addLayer({
         id: "NDZline",
