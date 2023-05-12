@@ -24,6 +24,8 @@
     - 10.297698
   layer: villageText
   zoom: 7
+  options: 
+    - deactivateScatter: true
 - title: This is the hazard line demarcated by NCSCM and GoI
   subtitle: Notice the intersections between the CRZ No Development Zone and the Hazard Line
   coords:

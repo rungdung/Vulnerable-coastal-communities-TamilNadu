@@ -36,6 +36,10 @@
           if(option['activateScatter']){
             makeGrid(map)
           }
+          else if(option['deactivateScatter']){
+            map.removeLayer('atRiskVillages100mtsScattered')
+            map.removeSource('atRiskVillages100mtsScattered')
+          }
         })
       }
       previousValue = value;
