@@ -1,0 +1,34 @@
+
+- title: Impact on vulnerable coastal communities in TamilNadu due to climate change
+  subtitle: An ongoing effort
+  coords:
+    - 78.486328
+    - 10.297698
+  layer: fishersSettlement
+  zoom: 7
+
+- title: There are 673 villages that are within a 100mts of the hazard line. But only one region has a climate change plan
+  subtitle: Chennai is one region in these 673 villages. It hosts 40lakh people and has a Climate Change Action Plan. but the rest of these villages also have 40lakh people. They do not.
+  coords:    
+    - 78.486328
+    - 10.297698
+  layer: 
+  zoom: 3
+  options: 
+    - activateScatter: true
+
+- title: These are villages in coastal Tamil Nadu that are vulnerable
+  subtitle: These villages are 100 mts from the Hazard Line demarcated by NCSCM and GoI
+  coords:
+    - 78.486328
+    - 10.297698
+  layer: villageText
+  zoom: 7
+- title: This is the hazard line demarcated by NCSCM and GoI
+  subtitle: Notice the intersections between the CRZ No Development Zone and the Hazard Line
+  coords:
+    - 78.486328
+    - 10.297698
+  layer: NDZline
+  zoom: 10
+

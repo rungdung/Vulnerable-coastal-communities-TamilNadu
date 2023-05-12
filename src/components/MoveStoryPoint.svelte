@@ -1,146 +1,87 @@
 <script>
+  // Movement functions
+  import { moveTo, makeGrid } from "./lib/movement.js";
+
+  // StoryTelling
   import Header from "./Header.svelte";
-  import maplibre from "maplibre-gl";
-  import "maplibre-gl/dist/maplibre-gl.css";
+  import readYaml from "read-yaml";
+  import Scrolly from "./Scrolly.svelte";
+  import storyPoints from "../storyPoints.yaml";
+  import jsYaml from "js-yaml";
+  let value;
 
-  // Geospatial librarie
-  import * as turf from "@turf/turf";
-
-  var title;
-  var subtitle;
+  // Import from parent file
   export let map;
 
-  // Displayes interarctive text on top of the map for narrative storytelling
-  let titles = [
-    "Impact on vulnerable coastal communities in TamilNadu due to climate change",
-    "These are villages in coastal tamilnadu that are vulnerable",
-    "This is the hazard line demarcated by NCSCM and GoI",
-  ];
-  let subtitles = [
-    "An ongoing effort",
-    " These villages are 100 mts from the Hazard Line demarcated by NCSCM and GoI",
-    "Notice the intersections between the CRZ No Development Zone and the Hazard Line",
-  ];
-  let coords = [
-    [78.486328, 10.297698],
-    [78.486328, 10.297698],
-    [78.486328, 10.297698],
-  ];
-  // Layer to enable
-  let layer = ["fishersSettlement", "villageText", "NDZline"];
-  let zoom = [7, 7, 10];
+  // Transitions
+  import { slide } from "svelte/transition";
+  import { fade } from "svelte/transition";
 
-  let currentIndex = 0;
+  // Watch for changes in the scrollPosition variable "value"
+  // Trigger the moveTo function when value changes or activate other options
+  let previousValue = value;
+  $: {
+    if (previousValue !== value) {
+      let storyPoint = storyPoints[value];
 
-  // Pans and zooms to next story point
-  function moveTo() {
-    currentIndex = (currentIndex + 1) % titles.length;
-    map.flyTo({
-      center: coords[currentIndex],
-      zoom: zoom[currentIndex],
-      pitch: 60, // pitch in degrees
-      bearing: 30, // bearing in degrees
-      speed: 0.5,
-      curve: 1,
-      easing: function (t) {
-        return t;
-      },
-    });
+      moveTo(
+        storyPoint["coords"],
+        storyPoint["zoom"],
+        storyPoint["layer"],
+        map
+      );
 
-    map.setLayoutProperty(layer[currentIndex], "visibility", "visible");
-  }
-
-  // Scatter effect to illustrate scale and disorient user
-  function makeGrid() {
-    // turf
-    // to animate geojson features to split up
-    let layer = map.getSource("atRiskVillages100mts");
-    const features = map.querySourceFeatures("atRiskVillages100mts", {
-      sourceLayer: layer.sourceLayer,
-    });
-
-    const geojsonLayer = {
-      type: "FeatureCollection",
-      features: features.map((feature) => {
-        return {
-          type: "Feature",
-          properties: feature.properties,
-          geometry: feature.geometry,
-        };
-      }),
-    };
-
-    // function to use turf.transformTranslate to move to targetPosition
-    function moveToPos(currentGeometry, startPosition, endPosition) {
-      const distance = turf.distance(startPosition, endPosition);
-      const direction = turf.bearing(startPosition, endPosition);
-
-      turf.transformTranslate(currentGeometry, distance, direction, {
-        mutate: true,
-      });
-    }
-
-    // Iterates through each feature and assigns a random position
-    turf.geomEach(
-      geojsonLayer,
-      function (
-        currentGeometry,
-        featureIndex,
-        featureProperties,
-        featureBBox,
-        featureId
-      ) {
-        let startPosition = turf.centerOfMass(currentGeometry);
-
-        // Get the map bounds
-        const bounds = map.getBounds();
-        // Extract the bounds coordinates
-        const { lng: west, lat: south } = bounds.getSouthWest();
-        const { lng: east, lat: north } = bounds.getNorthEast();
-        // Generate a random position within the bounds
-        const targetPosition = turf.randomPosition([west, south, east, north]);
-        moveToPos(currentGeometry, startPosition, targetPosition);
-        //console.log(currentGeometry);
+      if(storyPoint['options']){
+        Object.values(storyPoint['options']).forEach(option => {
+          if(option['activateScatter']){
+            makeGrid(map)
+          }
+        })
       }
-    );
-
-    // Updates the source with the new data
-    map.getSource("atRiskVillages100mts").setData(geojsonLayer);
+      previousValue = value;
+    }
   }
 </script>
 
-<svelte:head>
-  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
-</svelte:head>
-
 <main>
-  <div class="container-class">
-    <Header>
-      <span slot="title">{titles[currentIndex]}</span>
-      <span slot="subtitle">{subtitles[currentIndex]}</span>
-    </Header>
-    <!-- button to move to the next story -->
-    <div id="button-container" class="mt-4">
-      <button id="moveButton" class="Button" on:click={moveTo}>
-        Move to next point
-      </button>
-
-      <button id="gridButton" class="Button" on:click={makeGrid}>
-        Make Grid
-      </button>
+  <section id="scroll">
+    <div class="container-class">
+      <Scrolly bind:value>
+        {#each Object.values(storyPoints) as storyPoint}
+          <Header>
+            <span slot="title" transition:slide>
+              {storyPoint["title"]}
+            </span>
+            <span slot="subtitle" transition:slide>
+              {storyPoint["subtitle"]}
+            </span>
+          </Header>
+        {/each}
+      </Scrolly>
     </div>
-  </div>
+  </section>
 </main>
 
 <style>
+  #scroll {
+    height: 100vh;
+    position: absolute;
+    overflow: scroll;
+
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  #scroll:-webkit-scrollbar {
+    display: none;
+  }
   .container-class {
     font-family: "Averia Serif Libre", cursive;
-    position: absolute;
-    top: 2em;
-    left: 1em;
+    position: relative;
+    z-index: 5;
     width: auto;
     max-width: 50vw;
-    padding: 0rem;
+    padding: 3rem;
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 0.5rem;
     margin: 1rem;

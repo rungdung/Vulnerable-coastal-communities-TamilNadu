@@ -1,24 +1,37 @@
 <script>
   // Displayes interarctive text on top of the map for narrative storytelling]
-</script>
+  import { fade } from 'svelte/transition';
 
-<div id="text">
+
+</script>
+<!-- <section id="header">
   <h1 class="text-4xl  font-bold">
-    <slot name="title">
-        Impact on vulnerable coastal communities in TamilNadu due to climate change
-    </slot>
+    Impact on vulnerable coastal communities in TamilNadu due to climate change
   </h1>
   <p class="text-xl">
+    An ongoing effort
+  </p>
+</section> -->
+
+<div id="text">
+  <h1 transition:fade class="text-4xl  font-bold">
+    <slot name="title">
+    </slot>
+  </h1>
+  <p transition:fade class="text-xl">
     <slot name="subtitle">
-        An ongoing effort
     </slot>
   </p>
+  <div id="Buttons">
+    <slot name="buttons">
+    </slot>
+  </div>
 </div>
 
-
-
 <style>
-
+#text, #header{
+  height: 100vh;
+}
 </style>
 
 <svelte:head>

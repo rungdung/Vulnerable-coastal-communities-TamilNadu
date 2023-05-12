@@ -29,9 +29,12 @@
       zoom: 7,
       maxZoom: 10,
       minZoom: 3,
-    }).addControl(new maplibre.AttributionControl({
-    customAttribution: "ML Infomap. (2013) Tamil Nadu, India: Village Socio-Demographic and Economic Census Data, 2001 | CRZ data from National Centre for Sustainable Coastal Management"
-    }));;
+    }).addControl(
+      new maplibre.AttributionControl({
+        customAttribution:
+          "ML Infomap. (2013) Tamil Nadu, India: Village Socio-Demographic and Economic Census Data, 2001 | CRZ data from National Centre for Sustainable Coastal Management",
+      })
+    );
 
     // // Draw control
     // var Draw = new MapboxDraw();
@@ -46,7 +49,11 @@
         map.getCanvas().style.cursor = "pointer";
         popup
           .setLngLat(e.lngLat)
-          .setHTML(e.features[0].properties.name + "<br> Total Population: " + e.features[0].properties.tot_p)
+          .setHTML(
+            e.features[0].properties.name +
+              "<br> Total Population: " +
+              e.features[0].properties.tot_p
+          )
           .addTo(map);
       });
       map.on("mouseleave", "atRiskVillages100mts", function () {
@@ -74,9 +81,15 @@
 
 <div id="map" bind:this={mapContainer} />
 <Legend {map} />
-<MoveStoryPoint {map} />
+{#if loadStatus}
+  <MoveStoryPoint {map} />
+{/if}
+
 {#if loadStatus == false}
-  <span id="loading-icon" class="content-centre">
+  <span id="loading-icon" class="align-center">
+    <h1 class="text-3xl">
+      Story loading...
+    </h1>
     <ScaleOut
       id="loading-icon"
       size="100"
@@ -96,6 +109,7 @@
 
   #loading-icon {
     position: absolute;
+    text-align: center;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
